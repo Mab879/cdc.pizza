@@ -1,7 +1,6 @@
 image: debian:latest
 
 stages:
-  - convert
   - deploy
 
 .deploy_setup: &deploy_setup
