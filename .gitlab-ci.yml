@@ -1,0 +1,21 @@
+image: debian:latest
+
+stages:
+  - convert
+  - deploy
+
+.deploy_setup: &deploy_setup
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq openssh-client rsync
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - mkdir -p ~/.ssh
+    - 'echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+deploy:website:
+  <<: *deploy_setup
+  stage: deploy
+  script:
+    - rsync -avz . cdcpizza@172.104.25.239:/home/cdcpizza/public_html/
+  only:
+    - master
